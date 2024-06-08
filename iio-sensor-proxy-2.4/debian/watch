@@ -1,0 +1,3 @@
+version=4
+https://github.com/hadess/iio-sensor-proxy/releases/ \
+ .*/@PACKAGE@@ANY_VERSION@@ARCHIVE_EXT@

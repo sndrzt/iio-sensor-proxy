@@ -1,0 +1,63 @@
+Index: ioapps/Makefile
+===================================================================
+--- ioapps.orig/Makefile	2013-04-07 14:15:20.451664888 +0530
++++ ioapps/Makefile	2013-04-07 14:15:20.447664888 +0530
+@@ -1,10 +1,11 @@
+ .PHONY : all clean
+ 
++DESTDIR=/
+ DISTFILES=ioreplay
+ DOCDIR=man
+ IOPROFILER=ioprofiler
+ INSTALL=install
+-TARGET_PATH=/usr/bin
++TARGET_PATH=$(DESTDIR)/usr/bin
+ SOURCES=ioreplay.c print.c in_common.c in_strace.c in_binary.c replicate.c simulate.c stats.c fdmap.c namemap.c simfs.c adt/list.c adt/hash_table.c adt/fs_trie.c
+ CFLAGS=-c -g -Wall -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -I. -O3
+ OBJFILES=$(subst .c,.o,$(SOURCES))
+@@ -26,6 +27,8 @@
+ install: install_replay install_profiler
+ 
+ install_replay: replay
++	mkdir -p $(TARGET_PATH)
++
+ 	$(INSTALL) $(DISTFILES) $(TARGET_PATH)
+ 	$(MAKE) -C $(DOCDIR) install
+ 
+Index: ioapps/man/Makefile
+===================================================================
+--- ioapps.orig/man/Makefile	2013-04-07 14:15:20.451664888 +0530
++++ ioapps/man/Makefile	2013-04-07 14:15:20.447664888 +0530
+@@ -1,5 +1,5 @@
+ MANPAGE=ioreplay.1
+-MANDIR=/usr/share/man/man1/
++MANDIR=$(DESTDIR)/usr/share/man/man1/
+ INSTALL=install
+ 
+ all: $(MANPAGE)
+@@ -11,4 +11,5 @@
+ 	rm -f $(MANPAGE)
+ 
+ install:
++	mkdir -p $(MANDIR)
+ 	$(INSTALL) $(MANPAGE) $(MANDIR)
+Index: ioapps/ioprofiler/Makefile
+===================================================================
+--- ioapps.orig/ioprofiler/Makefile	2013-04-07 14:15:20.451664888 +0530
++++ ioapps/ioprofiler/Makefile	2013-04-07 14:15:51.943663699 +0530
+@@ -1,12 +1,13 @@
+ PYTHON=python
+ INSTALL=install
+-TARGET_PATH=/usr/bin/
++DESTDIR=/
++TARGET_PATH=$(DESTDIR)/usr/bin/
+ 
+ all:
+ 	python setup.py build
+ 
+ install:
+-	python setup.py install
++	python setup.py install --root $(CURDIR)/debian/tmp --install-layout=deb --prefix=/usr
+ 
+ clean:
+ 	python setup.py clean
